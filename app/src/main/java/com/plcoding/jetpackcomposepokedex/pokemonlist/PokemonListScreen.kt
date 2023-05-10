@@ -49,12 +49,13 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.request.ImageRequest
 import com.plcoding.jetpackcomposepokedex.R
-import com.plcoding.jetpackcomposepokedex.data.models.PokedexListEntry
+import com.plcoding.jetpackcomposepokedex.models.PokedexListEntry
 import com.plcoding.jetpackcomposepokedex.ui.theme.RobotoCondensed
 
 @Composable
 fun PokemonListScreen (
-    navController: NavController
+    navController: NavController,
+    viewmodel: PokemonListViewModel = hiltViewModel()
 ) {
     Surface(
         color = MaterialTheme.colors.background,
@@ -75,7 +76,7 @@ fun PokemonListScreen (
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-
+                viewmodel.searchPokemonList(it)
             }
             Spacer(modifier = Modifier.height(16.dp))
             PokemonList(navController = navController)
@@ -112,7 +113,7 @@ fun SearchBar (
                 .background(Color.White, CircleShape)
                 .padding(horizontal = 20.dp, vertical = 12.dp)
                 .onFocusChanged {
-                    isHintDisplayed = !it.isFocused
+                    isHintDisplayed = !it.isFocused && !text.isEmpty()
                 }
         )
         if (isHintDisplayed) {
@@ -132,8 +133,9 @@ fun PokemonList(
 ) {
     val pokemonList by remember {viewModel.pokemonList}
     val endReached by remember {viewModel.endReached}
-    val loadError by remember {viewModel.loadError}
+    //val loadError by remember {viewModel.loadError}
     val isLoading by remember {viewModel.isLoading}
+    val isSearching by remember {viewModel.isSearching}
 
     LazyColumn(contentPadding = PaddingValues(16.dp)) {
         val itemCount = if(pokemonList.size % 2 == 0) {
@@ -142,7 +144,7 @@ fun PokemonList(
             pokemonList.size / 2 + 1
         }
         items(itemCount) {
-            if (it >= itemCount - 1 && !endReached) {
+            if (it >= itemCount - 1 && !endReached && !isLoading && !isSearching) {
                 viewModel.loadPokemonPaginated()
             }
             PokedexRow(rowIndex = it, entries = pokemonList, navController = navController)
@@ -203,10 +205,6 @@ fun PokedexEntry(
                 modifier = Modifier
                     .size(120.dp)
                     .align(CenterHorizontally)
-            )
-            CircularProgressIndicator(
-                color = MaterialTheme.colors.primary,
-                modifier = Modifier.scale(0.5f)
             )
             Text(
                 text = entry.pokemonName,

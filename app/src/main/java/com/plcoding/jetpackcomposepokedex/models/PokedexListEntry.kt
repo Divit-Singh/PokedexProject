@@ -1,4 +1,4 @@
-package com.plcoding.jetpackcomposepokedex.data.models
+package com.plcoding.jetpackcomposepokedex.models
 
 data class PokedexListEntry(
     val pokemonName: String,
