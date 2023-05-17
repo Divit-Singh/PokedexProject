@@ -49,7 +49,7 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.request.ImageRequest
 import com.plcoding.jetpackcomposepokedex.R
-import com.plcoding.jetpackcomposepokedex.data.models.PokedexListEntry
+import com.plcoding.jetpackcomposepokedex.models.PokedexListEntry
 import com.plcoding.jetpackcomposepokedex.ui.theme.RobotoCondensed
 
 @Composable
@@ -133,7 +133,7 @@ fun PokemonList(
 ) {
     val pokemonList by remember {viewModel.pokemonList}
     val endReached by remember {viewModel.endReached}
-    val loadError by remember {viewModel.loadError}
+    //val loadError by remember {viewModel.loadError}
     val isLoading by remember {viewModel.isLoading}
     val isSearching by remember {viewModel.isSearching}
 
